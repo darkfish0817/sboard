@@ -6,3 +6,12 @@ spring:
     username: boardmgr
     password: boardmgr
     driver-class-name: org.mariadb.jdbc.Driver
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
