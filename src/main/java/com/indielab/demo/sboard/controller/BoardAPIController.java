@@ -3,6 +3,7 @@ package com.indielab.demo.sboard.controller;
 import com.indielab.demo.sboard.model.Board;
 import com.indielab.demo.sboard.repository.BoardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,6 +55,7 @@ public class BoardAPIController {
                 });
     }
 
+    @Secured("ROLE_ADMIN")
     @DeleteMapping("/boards/{id}")
     void deleteBoard(@PathVariable Long id) {
         repository.deleteById(id);

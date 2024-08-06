@@ -4,6 +4,7 @@ import com.indielab.demo.sboard.model.Board;
 import com.indielab.demo.sboard.model.User;
 //import com.indielab.demo.sboard.repository.BoardRepository;
 import com.indielab.demo.sboard.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
+@Slf4j
 public class UserAPIController {
 
     @Autowired
@@ -24,7 +26,11 @@ public class UserAPIController {
     // tag::get-aggregate-root[]
     @GetMapping("/users")
     List<User> all() {
-        return repository.findAll();
+        List<User> users = repository.findAll();
+        log.debug("getBoards().size() 호출전");
+        log.debug("getBoards().size() : {}", users.get(0).getBoards().size());
+        log.debug("getBoards().size() 호출후");
+        return users;
     }
     // end::get-aggregate-root[]
 

@@ -39,15 +39,29 @@
                 <br/>
                 <div style="float : right">
                     <button type="submit" class="btn btn-dark">확인</button>
-                    <a type="button" class="btn btn-dark" th:href="@{/board/list}">취소</a>
+                    <a class="btn btn-dark" th:href="@{/board/list}">취소</a>
+                    <button type="button" class="btn btn-dark" sec:authorize="hasRole('ROLE_ADMIN')" th:onclick="|deleteBoard(*{id})|">삭제</button>
                 </div>
             </form>
         </div>
     </div>
-    <!-- Bootstrap core JS-->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Core theme JS-->
-    <script src="js/scripts.js" th:src="@{/js/scripts.js}"></script>
+    
+    <footer th:replace="fragments/common :: footer"></footer>
+
+    <script>
+        function deleteBoard(id) {
+            //DELETE /api/boards/{id}
+            $.ajax({
+                url: '/api/boards/' + id,
+                type: 'DELETE',
+                success: function(result) {
+                    console.log('result', result);
+                    alert('삭제됐습니다');
+                    windows.location.href = '/board/list';
+                }
+            });
+        }
+    </script>
 </body>
 
 </html>
