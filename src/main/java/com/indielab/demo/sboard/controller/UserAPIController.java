@@ -1,9 +1,11 @@
 package com.indielab.demo.sboard.controller;
 
+import com.indielab.demo.sboard.mapper.UserMapper;
 import com.indielab.demo.sboard.model.Board;
 import com.indielab.demo.sboard.model.User;
 //import com.indielab.demo.sboard.repository.BoardRepository;
 import com.indielab.demo.sboard.repository.UserRepository;
+//import com.querydsl.core.types.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -18,21 +20,48 @@ public class UserAPIController {
 
     @Autowired
     private UserRepository repository;
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private UserMapper userMapper;
 
 //    @Autowired
 //    private BoardRepository boardRepository;
 
     // Aggregate root
     // tag::get-aggregate-root[]
+//    @GetMapping("/users")
+//    List<User> all() {
+//        List<User> users = repository.findAll();
+//        log.debug("getBoards().size() 호출전");
+//        log.debug("getBoards().size() : {}", users.get(0).getBoards().size());
+//        log.debug("getBoards().size() 호출후");
+//        return users;
+//    }
+    // end::get-aggregate-root[]
+
     @GetMapping("/users")
-    List<User> all() {
-        List<User> users = repository.findAll();
-        log.debug("getBoards().size() 호출전");
-        log.debug("getBoards().size() : {}", users.get(0).getBoards().size());
-        log.debug("getBoards().size() 호출후");
+    //List<User> all(@RequestParam(required = false) String method, @RequestParam(required = false) String text) {
+    Iterable<User> all(@RequestParam(required = false) String method, @RequestParam(required = false) String text) {
+        //List<User> users = null;
+        Iterable<User> users = null;
+        if("query".equals(method)) {
+            users = repository.findByUsernameQuery(text);
+        } else if("nativeQuery".equals(method)) {
+            users = repository.findByUsernameNativeQuery(text);
+//        } else if("querydsl".equals(method)) {
+//            QUser user = QUser.customer;
+//            Predicate predicate = user.username.contains(text);
+//
+//            repository.findAll(predicate);
+        } else if("mybatis".equals(method)) {
+            users = userMapper.getUsers(text);
+        } else {
+            users = repository.findAll();
+        }
         return users;
     }
-    // end::get-aggregate-root[]
 
     @PostMapping("/users")
     User newUser(@RequestBody User newUser) {
